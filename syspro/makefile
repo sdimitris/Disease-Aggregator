@@ -1,0 +1,10 @@
+diseaseMonitor:
+		@echo "Compiling disease monitor...";
+		gcc -I  ./headfiles ./src/diseaseMonitor.c ./src/avl_tree.c ./src/hash_table.c ./src/functions.c ./src/record_list.c -D_XOPEN_SOURCE -o  ./build/diseaseMonitor
+
+debug:
+		@echo "Preparing for debugging..";
+		gcc -I  ./headfiles ./src/diseaseMonitor.c ./src/avl_tree.c  ./src/hash_table.c ./src/functions.c  ./src/record_list.c -D_XOPEN_SOURCE -o  ./build/diseaseMonitor -g
+
+clean: 
+	rm  ./build/diseaseMonitor
