@@ -139,12 +139,27 @@ treeNode* insert_date(treeNode* node,Patient* patient,list_node* tail){
 		return node;
 
 }
+void print_tree_node(treeNode* node){
+
+	print_patient(node->record->patient);
+	if(node->duplicates->head != NULL){
+		list_node* temp = node->duplicates->head;
+		while(temp != NULL){
+			print_patient(temp->record->patient);
+			temp = temp->next;
+		}
+	}
+
+}
+
+
 
 void print_tree(treeNode* node){
 	if(node == NULL)
 		return;
 	print_tree(node->left);
 	print_tree(node->right);
+
 	printf("entryDate %d-%d-%d: %s %s ",node->date.tm_mday,node->date.tm_mon,node->date.tm_year,node->record->patient->firstname
 		,node->record->patient->lastname);
 
@@ -158,4 +173,23 @@ void print_tree(treeNode* node){
 	}
 	printf("\n");
 
+}
+
+void print_tree_interval(treeNode* node,struct tm date1,struct tm date2){  //[date1,date2]
+	if(node == NULL)
+		return;
+	if(difftime(mktime(&(date1)), mktime(&(node->date))) < 0){
+		print_tree_interval(node->left,date1,date2);
+	}
+	if(difftime(mktime(&(date1)), mktime(&(node->date))) <= 0 && difftime(mktime(&(date2)), mktime(&(node->date))) >= 0){ 
+
+		printf("entryDate %d-%d-%d: %s %s ",node->date.tm_mday,node->date.tm_mon,node->date.tm_year,node->record->patient->firstname
+		,node->record->patient->lastname);
+	}
+	if(difftime(mktime(&(date2)), mktime(&(node->date))) > 0){
+		print_tree_interval(node->right,date1,date2);
+	}
+
+
+	
 }

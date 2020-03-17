@@ -9,6 +9,7 @@ HashEntry* hash_table_init(int Buckets){
 	for(int i = 0; i < Buckets; i++)
 		Hash_table[i].head = NULL;
 
+	Hash_table->buckets = Buckets;
 
 	return Hash_table;
 }
@@ -55,7 +56,7 @@ int key_duplicate(HashEntry* Table,Bucket**  bucket_pos,char* key, int hash){
 			current_entries = bucket->counter;
 			for(int i = 0; i < current_entries; i++){
 				if(!strcmp(key,bucket->entries[i].key)){
-					*(bucket_pos) = bucket;
+					*(bucket_pos) = bucket;				
 					return i; // RETURN TRUE
 				}
 			}

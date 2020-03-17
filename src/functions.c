@@ -63,6 +63,15 @@ void print_table(HashEntry* table,int buckets){
 			printf("\n");
 		}	
 	}
+
+}
+
+void print_patient(Patient* patient){
+
+	printf("%s %s %s %s exitDate: %d-%d-%d\n",patient->firstname,patient->lastname,patient->diseaseID,patient->country,
+		patient->exitDate.tm_mday,patient->exitDate.tm_mon,patient->exitDate.tm_year);
+	return;
+
 }
 
 

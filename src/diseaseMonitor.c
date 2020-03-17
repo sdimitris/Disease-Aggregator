@@ -113,7 +113,7 @@ while(fgets(buffer,buffer_size,fp)){
     
 }
 printf("Printing disease hash table\n");
-print_table(diseaseHashtable,diseaseHashtableNumofEntries);
+//print_table(diseaseHashtable,diseaseHashtableNumofEntries);
 //printf("\n");
 //printf("Printing country hash table...\n\n");
 //print_table(countryHashtable,countryHashtableNumofEntries);
@@ -125,12 +125,42 @@ print_table(diseaseHashtable,diseaseHashtableNumofEntries);
 
 //printf("Printing tree...\n");
 //printf("edw\n");
+printf("\n\n");
 
-free(buffer);
+char* command = malloc(sizeof(char)*100);
+struct tm date1,date2;
 
-fclose(fp);
+memset(&date1, 0, sizeof(struct tm));
+memset(&date2, 0, sizeof(struct tm));
+
+
+entryDate = malloc(20);
+exitDate = malloc(20);
+
+
+label:
+    while(1){  
+        printf("Type the aprpropiate command\n");
+        scanf("%s",command);
+        
+        buffer = strtok(command," ");
+        
+            if(!strcmp(buffer,"/exit")){
+                printf("Terminating disease monitor...\n");
+                exit(0);
+            }
+            else if(!strcmp(buffer,"/global")){
+                strptime(strtok(NULL," "),"%d-%m-%Y",&date1);
+                strptime(strtok(NULL," "),"%d-%m-%Y",&date2);
+                break;
+
+            }
+    }
+
+
 
 }
+
 	
 
 

@@ -50,6 +50,7 @@ typedef struct Bucket{
 
 typedef struct HashEntry{
 	Bucket* head;
+	int buckets;
 }HashEntry;
 
 

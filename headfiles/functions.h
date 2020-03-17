@@ -28,5 +28,12 @@ treeNode* insert_date(treeNode* Node,Patient* patient,list_node* node);
 void print_tree(treeNode* Node);
 treeNode* right_rotate(treeNode* node);
 treeNode* left_rotate(treeNode* node);
+void print_tree_node(treeNode* node);
+
+
+
+void globalDiseaseStats(HashEntry*,struct tm,struct tm);
+void print_tree_interval(treeNode* node,struct tm date1,struct tm date2);
+void print_patient(Patient* patient);
 
 #endif

@@ -1,10 +1,2 @@
-47 David Williams SARS-1 Denmark 30-05-2009 20-02-2020
+47 David Williams FLU-2018 Denmark 30-05-2009 20-02-2020
 39 Mary Sanders FLU-2018 France 22-06-2012 04-01-2017
-37 Timothy Miller FLU-2018 Vietnam 21-06-2012 26-04-2017
-71 Dimitris Soldatos COVID-2019 Argentina 22-06-2012 15-01-2012
-14 Aris NikitakisXlempoyras SARS-1 Denmark 30-05-2009 20-02-2020
-13 Kotsakis Thanos FLU-2018 France 22-06-2012 04-01-2017
-12 Tsoulias Xristos FLU-2018 Vietnam 23-06-2012 26-04-2017
-11 Manthos Foustanos COVID-2019 Argentina 22-06-2012 15-01-2012
-15 Annie K COVID-2019 Argentina 22-06-2013 15-01-2012
-20 TROLLATOS Foustanos COVID-2019 Argentina 22-05-2012 15-01-2012
