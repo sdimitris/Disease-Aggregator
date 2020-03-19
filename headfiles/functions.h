@@ -4,16 +4,15 @@
 #include<time.h>
 #include"structures.h"
 
-int check_duplicates(FILE* fp);
+void duplicate_id(list* list,int id);
 struct tm string_to_date(char* date);
 int hash(char* string,int Buckets);
-void print_table(HashEntry* table,int buckets);
 void print_hash_cell(HashEntry* table,int hash);
 HashEntry* hash_table_init(int Buckets);
-HashEntry* create_bucket(HashEntry* Hash_Table ,char* key , struct Bucket* bucket , int hash,int BucketSize);
+Bucket* create_bucket(char* key,int BucketSize);
 HashEntry* insert_bucket(HashEntry* Hash_Table,int option,list_node* tail,int BucketSize,int Buckets);
 int key_duplicate(HashEntry* Table,Bucket** bucket_pos,char* key, int hash);
-
+int differentRecs(HashEntry* table);
 void diseaseFrequency(HashEntry*,char* ,char*,char*,char* );
 
 list* insert_list(list* list,struct Patient* patient);
@@ -42,4 +41,8 @@ int tree_attribute(treeNode* root, char* diseaseID,char* country,struct tm date1
 int tree_no_exit(treeNode* root);
 void numCurrentPatients(HashEntry* table,char* diseaseID);
 int is_date(struct tm date);
+
+
+heap* make_heap(int size);
+heap* fill_heap(HashEntry*,heap* heap,char* country);
 #endif

@@ -1,3 +1,4 @@
+259 Daniel Aguilar EVD France 02-10-2009 -
 539 Laura Hale FLU-2018 Argentina 27-06-2000 25-07-2002
 666 Kayla Hamilton SARS-1 Greece 22-02-2002 -
 652 James Burke FLU-2018 Russia 22-06-2001 23-02-2010
@@ -685,7 +686,6 @@
 466 Michael Costa SARS-COV-2 Vietnam 26-08-2013 -
 351 Kelsey Moore MERS-COV Germany 07-02-2019 12-01-2020
 942 Kathryn Clark SARS-COV-2 Turkey 26-12-2005 13-01-2007
-259 Daniel Aguilar EVD France 02-10-2009 -
 174 Louis Gonzalez COVID-2019 Turkey 29-03-2006 02-12-2016
 45 Peter Murray SARS-1 Denmark 24-04-2003 23-02-2011
 645 Derek Murphy EVD Vietnam 01-12-2002 07-09-2003

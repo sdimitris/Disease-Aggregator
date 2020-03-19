@@ -101,11 +101,15 @@ void diseaseFrequency(HashEntry* table,char* diseaseID,char* country,char* entry
    	}
 }
 
-void insert_exitDate(list* list,int id,struct tm exitDate){
+ void insert_exitDate(list* list,int id,struct tm exitDate){
 	list_node* temp =  list->head;
 
 	while(temp != NULL){
 		if( temp->patient->id == id){
+			if(difftime(mktime(&temp->patient->entryDate),mktime(&exitDate)) >=  0){
+				printf("Exit date must be after entry date\n");
+				return;
+			}
 			memcpy(&temp->patient->exitDate,&exitDate,sizeof(struct tm));
 			printf("Exit date on %d inserted\n",id);
 			return;
@@ -119,14 +123,15 @@ void insert_exitDate(list* list,int id,struct tm exitDate){
 
 void numCurrentPatients(HashEntry* table,char* diseaseID){
 	int hash_value = 0;
+	int i = 0;
 	int current_entries = 0;
 	treeNode* root = NULL;
 	Bucket* bucket = NULL;
-	if(diseaseID){
+	if(diseaseID != NULL){
 		hash_value = hash(diseaseID,table->buckets);
 		bucket = table[hash_value].head;
 		current_entries = bucket->counter;
-		for( int i = 0; i < current_entries; i++){
+		for( i = 0; i < current_entries; i++){
 			root = bucket->entries[i].root;
 			if(diseaseID){
 				if(!strcmp(bucket->entries[i].key,diseaseID)){
@@ -136,20 +141,19 @@ void numCurrentPatients(HashEntry* table,char* diseaseID){
 			}
 		}
 	}
-	else{
-		for( int i = 0; i < table->buckets; i++){
+	else if(diseaseID == NULL){
+		int buckets = table->buckets;
+		for(i = 0; i < buckets; i++){
 			bucket = table[i].head;
-			if(bucket == NULL)
-				continue;
 			while(bucket != NULL){
 				current_entries = bucket->counter;
 				for(int j = 0; j < current_entries; j++){
 					root = bucket->entries[j].root;
 					printf("%s: %d\n",bucket->entries[j].key,tree_no_exit(root));
 				}
+				
 				bucket = bucket->next;
 			}
 		}
 	}
-	return;
 }

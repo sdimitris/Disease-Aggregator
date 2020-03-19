@@ -1,7 +1,7 @@
 #ifndef __STRUCTURES__
 #define __STRUCTURES__
 #include<time.h>
-#define ENTRY_SIZE 20 
+#define ENTRY_SIZE 20
 
 typedef struct Patient{
 	int id;
@@ -55,7 +55,8 @@ typedef struct HashEntry{
 }HashEntry;
 
 
-
-
-
+typedef struct heap{
+	int counter;
+	char* key;
+}heap;
 #endif

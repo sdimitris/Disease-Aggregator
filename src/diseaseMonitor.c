@@ -8,30 +8,47 @@
 
 Patient* create_patient(int id,char* firstname,char* lastname,char* diseaseID,char* country, char* entryDate, char* exitDate){
     Patient* patient = malloc(sizeof(struct Patient));
-
+    struct tm date1,date2;
     patient->id = id;
-    memset(&patient->exitDate, 0, sizeof(struct tm));
-	memset(&patient->entryDate, 0, sizeof(struct tm));
+
+    memset(&date1, 0, sizeof(struct tm));
+	memset(&date2, 0, sizeof(struct tm));
 
     patient->firstname = malloc(ENTRY_SIZE*sizeof(char));
-    memcpy(patient->firstname,firstname,ENTRY_SIZE);
+    strcpy(patient->firstname,firstname);
 
 
     patient->lastname = malloc(ENTRY_SIZE*sizeof(char));
-    memcpy(patient->lastname,lastname,ENTRY_SIZE);
+    strcpy(patient->lastname,lastname);
 
 
     patient->diseaseID = malloc(ENTRY_SIZE*sizeof(char));
-    memcpy(patient->diseaseID,diseaseID,ENTRY_SIZE);
+    strcpy(patient->diseaseID,diseaseID);
 
     patient->country = malloc(ENTRY_SIZE*sizeof(char));
-    memcpy(patient->country,country,ENTRY_SIZE);
+    strcpy(patient->country,country);
 
-    strptime(entryDate,"%d-%m-%Y",&(patient->entryDate));
-    strptime(exitDate,"%d-%m-%Y",&(patient->exitDate));
+    strptime(entryDate,"%d-%m-%Y",&date1);
+    strptime(exitDate,"%d-%m-%Y",&date2);
+
+    memcpy(&patient->entryDate,&date1,sizeof(struct tm));
+    memcpy(&patient->exitDate,&date2,sizeof(struct tm));
 
     return patient;
 
+
+}
+void print_table(HashEntry* table){
+    int buckets = table->buckets;
+    for( int i = 0; i < buckets; i++){
+        Bucket* bucket = table[i].head;
+        while(bucket != NULL){
+            int current_entries = bucket->counter;
+            for(int j = 0; j < current_entries; j++)
+                printf("key %s ",bucket->entries[j].key);
+            bucket = bucket->next;
+        }
+    }
 
 }
 
@@ -88,7 +105,6 @@ int buffer_size = 100;
 char* buffer = malloc(buffer_size*sizeof(char)); // max characters in line
 
 
-
 Patient* patient;
 char* firstname,*lastname,*diseaseID,*country,*entryDate,*exitDate;
 
@@ -101,9 +117,10 @@ while(fgets(buffer,buffer_size,fp)){
     country = strtok(NULL," ");
     entryDate = strtok( NULL, " ");
     exitDate = strtok(NULL," ");
-    
+
     patient = create_patient(id,firstname,lastname,diseaseID,country,entryDate,exitDate);
-    
+
+ 
 
     patient_list = insert_list(patient_list,patient); /// 1 2 3 4
 
@@ -112,15 +129,13 @@ while(fgets(buffer,buffer_size,fp)){
     
     hash_value = hash(patient->country,countryHashtableNumofEntries);
     countryHashtable = insert_bucket(countryHashtable,2,patient_list->tail,BucketSize,hash_value);
-
-    
 }
 printf("Printing disease hash table\n");
-//print_table(diseaseHashtable,diseaseHashtableNumofEntries);
+
+//print_table(countryHashtable);
+
 //printf("\n");
 //printf("Printing country hash table...\n\n");
-//print_table(countryHashtable,countryHashtableNumofEntries);
-
 //list_node* temp = patient_list->head;
 
 //printf("Printing patients...\n");
@@ -128,7 +143,6 @@ printf("Printing disease hash table\n");
 
 //printf("Printing tree...\n");
 //printf("edw\n");
-printf("\n\n");
 
 char* command;
 struct tm date1,date2;
@@ -137,8 +151,7 @@ memset(&date1, 0, sizeof(struct tm));
 memset(&date2, 0, sizeof(struct tm));
 char* temp,*uknown;
 size_t size = 100;
-
-
+//print_tree(countryHashtable[6].head->entries[1].root);
 label:
     while(getline(&buffer,&size,stdin) != -1){  
         printf("Type the aprpropiate command\n");
@@ -180,12 +193,15 @@ label:
                 firstname = strtok(NULL," ");
                 lastname = strtok(NULL," ");
                 diseaseID = strtok(NULL," ");
-                entryDate = strtok( NULL, " ");
+                country  = strtok(NULL," ");
+                entryDate = strtok(NULL," ");
                 exitDate = strtok(NULL," ");
+
+                if(patient_list)
+                    duplicate_id(patient_list,id);
 
                 if(exitDate == NULL)
                     exitDate = "-";
-
                 patient = create_patient(id,firstname,lastname,diseaseID,country,entryDate,exitDate);
                 patient_list = insert_list(patient_list,patient); /// 1 2 3 4
 
@@ -202,17 +218,28 @@ label:
                 id = atoi(strtok(NULL," ")); // initialize
                 exitDate = strtok(NULL," ");
                 if(exitDate == NULL){
-                    printf("Please give valid exit date\n");
+                    printf("Please give valid aguments\n");
                     continue;
                 }
                 strptime(exitDate,"%d-%m-%Y",&date2);
                 insert_exitDate(patient_list,id,date2);
-                print_list(patient_list);
+               // print_list(patient_list);
                 continue;
+
             }
             else if(!strcmp(temp,"/numCurrentPatients")){
             	diseaseID = strtok(NULL," "); // initialize
             	numCurrentPatients(diseaseHashtable,diseaseID);
+            }
+            else if(!strcmp(temp,"topk-Countries")){
+                heap* heap;
+                int k = atoi(strtok(NULL," "));
+                country = strtok(NULL," ");
+                printf("%d\n",differentRecs(countryHashtable));
+                heap = make_heap(differentRecs(countryHashtable));
+                heap = fill_heap(countryHashtable,heap,country);
+                
+                
             }
 
     }

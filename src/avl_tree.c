@@ -86,6 +86,7 @@ treeNode* insert_date(treeNode* node,Patient* patient,list_node* tail){
 	}
 	if(difftime(mktime(&(patient->entryDate)), mktime(&(node->date))) == 0){ //if the key is tha same
 		list_node* duplicate = malloc(sizeof(struct list_node));
+
 		duplicate->next = NULL;
 		duplicate->record = tail; //now new_node points to the tail of the  outer list
 
@@ -98,7 +99,6 @@ treeNode* insert_date(treeNode* node,Patient* patient,list_node* tail){
 		else{
 			temp = node->duplicates->tail;
 			temp->next = duplicate; // now tail points to the new node
-
 		}
 
 		node->duplicates->tail = duplicate; //new tail is the duplicate
@@ -157,7 +157,7 @@ void print_tree_node(treeNode* node){
 int tree_attribute(treeNode* root, char* diseaseID,char* country,struct tm date1,struct tm date2){
 	int count = 0;
 	list_node* temp;
-	
+
 	if(root){ 
 		if(difftime(mktime(&(date1)),mktime(&(root->date))) <= 0 && difftime(mktime(&(date2)), mktime(&(root->date))) >= 0){
 
@@ -181,15 +181,19 @@ int tree_attribute(treeNode* root, char* diseaseID,char* country,struct tm date1
 int tree_no_exit(treeNode* root){
 	int count = 0;
 	if(root){
+		//printf("DiseaseID %")
 		if(!is_date(root->record->patient->exitDate)){
+			//printf(" id %d first name %s %s\n",root->record->patient->id,root->record->patient->firstname,root->record->patient->lastname);
 			count++;
 			if(root->duplicates->head){
 				list_node* temp = root->duplicates->head;	
 				while(temp != NULL){
-					if(!is_date(temp->record->patient->exitDate))
+					if(!is_date(temp->record->patient->exitDate)){
+						print_patient(temp->record->patient);
 						count++;
+					}
+					temp = temp->next;
 				}
-				temp = temp->next;
 			}
 		}
 		count += tree_no_exit(root->left);
@@ -204,6 +208,7 @@ int count_interval(treeNode* node,struct tm date1,struct tm date2){  //[date1,da
 
 	int count = 0;
 	if(node){ 
+
 		if(difftime(mktime(&(date1)),mktime(&(node->date))) <= 0 && difftime(mktime(&(date2)), mktime(&(node->date))) >= 0){
 			count++;
 			if(node->duplicates->head)
@@ -215,8 +220,6 @@ int count_interval(treeNode* node,struct tm date1,struct tm date2){  //[date1,da
 	}
 	return count;
 }
-
-
 
 int count_tree_nodes(treeNode* node){
 	int count = 0;
@@ -236,6 +239,6 @@ void print_tree(treeNode* node){
 		return;
 	print_tree(node->right);
 	print_tree(node->left);
-	printf("%s\n",node->record->patient->firstname);
+	print_patient(node->record->patient);
 }
 	
