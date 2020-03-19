@@ -1,3 +1,4 @@
+#define  _GNU_SOURCE
 #include<stdio.h>
 #include<stdlib.h>
 #include<unistd.h>
@@ -9,6 +10,8 @@ Patient* create_patient(int id,char* firstname,char* lastname,char* diseaseID,ch
     Patient* patient = malloc(sizeof(struct Patient));
 
     patient->id = id;
+    memset(&patient->exitDate, 0, sizeof(struct tm));
+	memset(&patient->entryDate, 0, sizeof(struct tm));
 
     patient->firstname = malloc(ENTRY_SIZE*sizeof(char));
     memcpy(patient->firstname,firstname,ENTRY_SIZE);
@@ -127,34 +130,91 @@ printf("Printing disease hash table\n");
 //printf("edw\n");
 printf("\n\n");
 
-char* command = malloc(sizeof(char)*100);
+char* command;
 struct tm date1,date2;
 
 memset(&date1, 0, sizeof(struct tm));
 memset(&date2, 0, sizeof(struct tm));
-
-
-entryDate = malloc(20);
-exitDate = malloc(20);
+char* temp,*uknown;
+size_t size = 100;
 
 
 label:
-    while(1){  
+    while(getline(&buffer,&size,stdin) != -1){  
         printf("Type the aprpropiate command\n");
-        scanf("%s",command);
+            
         
-        buffer = strtok(command," ");
-        
-            if(!strcmp(buffer,"/exit")){
+        command = strtok(buffer,"\n");
+ 		
+ 		temp = strtok(command," ");
+ 		printf("%s\n",temp);
+            if(!strcmp(temp,"/exit")){
                 printf("Terminating disease monitor...\n");
                 exit(0);
             }
-            else if(!strcmp(buffer,"/global")){
-                strptime(strtok(NULL," "),"%d-%m-%Y",&date1);
-                strptime(strtok(NULL," "),"%d-%m-%Y",&date2);
-                break;
+            else if(!strcmp(temp,"/globalDiseaseStats")){
+            	entryDate = strtok(NULL," ");
+            	exitDate = strtok(NULL," ");
+            	globalDiseaseStats(diseaseHashtable,entryDate,exitDate);
+                continue;
 
             }
+            else if(!strcmp(temp,"/diseaseFrequency")){
+            	diseaseID = strtok(NULL," ");
+            	country = strtok(NULL," ");
+            	entryDate = strtok(NULL," ");
+            	exitDate = strtok(NULL," ");
+            	if(exitDate == NULL){
+            		exitDate = entryDate;
+            		entryDate = country;
+                    country = NULL;
+            	    diseaseFrequency(diseaseHashtable,diseaseID,country,entryDate,exitDate);
+            	}
+                else{
+                    diseaseFrequency(countryHashtable,diseaseID,country,entryDate,exitDate);
+                }
+                continue;
+            }
+            else if(!strcmp(temp,"/insertPatientRecord")){
+                id = atoi(strtok(NULL," ")); // initialize
+                firstname = strtok(NULL," ");
+                lastname = strtok(NULL," ");
+                diseaseID = strtok(NULL," ");
+                entryDate = strtok( NULL, " ");
+                exitDate = strtok(NULL," ");
+
+                if(exitDate == NULL)
+                    exitDate = "-";
+
+                patient = create_patient(id,firstname,lastname,diseaseID,country,entryDate,exitDate);
+                patient_list = insert_list(patient_list,patient); /// 1 2 3 4
+
+                hash_value = hash(patient->diseaseID,diseaseHashtableNumofEntries);
+                diseaseHashtable = insert_bucket(diseaseHashtable,1,patient_list->tail,BucketSize,hash_value);
+    
+                hash_value = hash(patient->country,countryHashtableNumofEntries);
+                countryHashtable = insert_bucket(countryHashtable,2,patient_list->tail,BucketSize,hash_value);
+                print_list(patient_list);
+                continue;
+            }
+            else if(!strcmp(temp,"/recordPatientExit")){
+
+                id = atoi(strtok(NULL," ")); // initialize
+                exitDate = strtok(NULL," ");
+                if(exitDate == NULL){
+                    printf("Please give valid exit date\n");
+                    continue;
+                }
+                strptime(exitDate,"%d-%m-%Y",&date2);
+                insert_exitDate(patient_list,id,date2);
+                print_list(patient_list);
+                continue;
+            }
+            else if(!strcmp(temp,"/numCurrentPatients")){
+            	diseaseID = strtok(NULL," "); // initialize
+            	numCurrentPatients(diseaseHashtable,diseaseID);
+            }
+
     }
 
 

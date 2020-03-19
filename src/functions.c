@@ -11,6 +11,12 @@ strptime(string,"%d-%m-%Y",&time_struct);
 return time_struct;
 
 }
+int is_date(struct tm date){
+	if( date.tm_year == 0 && date.tm_mday == 0 && date.tm_mon == 0 )
+		return 0;
+	else 
+		return 1;
+}
 
 list* list_init(list* list){
 	list->head = NULL;
@@ -39,32 +45,7 @@ void print_hash_cell(HashEntry* table,int hash){
 		}
 	}
 }
-void print_table(HashEntry* table,int buckets){
-	int counter = 0;
-	Bucket* bucket;
-	for( int i = 0; i < buckets; i++){
-		bucket = table[i].head;
-		if(bucket == NULL){
-			printf("Bucket: %d is empty\n",i);
-			continue;
-		}
-		else{
-			printf("Bucket: %d ",i);
-			while(bucket != NULL){
-				printf("\nKeys: ");
-					counter = 0;
-					while(counter < bucket->counter){
-						printf("%s\n",bucket->entries[counter].key);
-						print_tree(bucket->entries[counter].root);
-						counter++;
-					}
-				bucket = bucket->next;
-			}
-			printf("\n");
-		}	
-	}
 
-}
 
 void print_patient(Patient* patient){
 

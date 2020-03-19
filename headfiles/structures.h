@@ -22,6 +22,7 @@ typedef struct list_node{
 typedef struct List{
 	list_node* head;
 	list_node* tail;
+	int counter;
 }list;
 
 

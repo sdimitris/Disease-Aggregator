@@ -41,7 +41,8 @@ if(temp == NULL){
 while(temp != NULL){
 	patient = temp->patient;
 	printf("%d %s %s %s %s  with entry Date ",patient->id,patient->firstname,patient->lastname,patient->diseaseID,patient->country);
-	printf("%d-%d-%d\n",patient->entryDate.tm_mday,patient->entryDate.tm_mon,patient->entryDate.tm_year);
+	printf("%d-%d-%d exit Date %d-%d-%d\n",patient->entryDate.tm_mday,patient->entryDate.tm_mon,patient->entryDate.tm_year,
+		patient->exitDate.tm_mday,patient->exitDate.tm_mon,patient->exitDate.tm_year);
 	temp = temp->next;
 
 }

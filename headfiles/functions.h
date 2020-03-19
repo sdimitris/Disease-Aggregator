@@ -14,7 +14,7 @@ HashEntry* create_bucket(HashEntry* Hash_Table ,char* key , struct Bucket* bucke
 HashEntry* insert_bucket(HashEntry* Hash_Table,int option,list_node* tail,int BucketSize,int Buckets);
 int key_duplicate(HashEntry* Table,Bucket** bucket_pos,char* key, int hash);
 
-
+void diseaseFrequency(HashEntry*,char* ,char*,char*,char* );
 
 list* insert_list(list* list,struct Patient* patient);
 void print_list(list* list);
@@ -29,11 +29,17 @@ void print_tree(treeNode* Node);
 treeNode* right_rotate(treeNode* node);
 treeNode* left_rotate(treeNode* node);
 void print_tree_node(treeNode* node);
-
-
-
-void globalDiseaseStats(HashEntry*,struct tm,struct tm);
-void print_tree_interval(treeNode* node,struct tm date1,struct tm date2);
+void insert_exitDate(list* list,int id,struct tm exitDate);
+int count_tree_nodes(treeNode* node);
+void print_tree(treeNode* node);
+void globalDiseaseStats(HashEntry*,char*,char*);
+void printDiseaseStats(treeNode* ,char* ,char* );
+int count_interval(treeNode* node,struct tm date1,struct tm date2);
 void print_patient(Patient* patient);
-
+int virusStats(HashEntry* table,char* diseaseID,struct tm date1,struct tm date2);
+int countryStats(HashEntry* table,char* diseaseID,char* country,struct tm date1,struct tm date2);
+int tree_attribute(treeNode* root, char* diseaseID,char* country,struct tm date1,struct tm date2);
+int tree_no_exit(treeNode* root);
+void numCurrentPatients(HashEntry* table,char* diseaseID);
+int is_date(struct tm date);
 #endif

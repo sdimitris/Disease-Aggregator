@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include"structures.h"
 #include"functions.h"
+#include<string.h>
 
 
 
@@ -79,11 +80,11 @@ treeNode* insert_date(treeNode* node,Patient* patient,list_node* tail){
 	if(node == NULL){
 		treeNode* new_node = create_treeNode(patient->entryDate);
 		new_node->record =  tail;
+		new_node->duplicates->counter = 0;
 		return new_node;
 
 	}
 	if(difftime(mktime(&(patient->entryDate)), mktime(&(node->date))) == 0){ //if the key is tha same
-
 		list_node* duplicate = malloc(sizeof(struct list_node));
 		duplicate->next = NULL;
 		duplicate->record = tail; //now new_node points to the tail of the  outer list
@@ -97,9 +98,11 @@ treeNode* insert_date(treeNode* node,Patient* patient,list_node* tail){
 		else{
 			temp = node->duplicates->tail;
 			temp->next = duplicate; // now tail points to the new node
+
 		}
 
 		node->duplicates->tail = duplicate; //new tail is the duplicate
+		node->duplicates->counter++;
 		return node;
 	}
 	if(difftime(mktime(&(patient->entryDate)), mktime(&(node->date))) < 0){
@@ -151,45 +154,88 @@ void print_tree_node(treeNode* node){
 	}
 
 }
+int tree_attribute(treeNode* root, char* diseaseID,char* country,struct tm date1,struct tm date2){
+	int count = 0;
+	list_node* temp;
+	
+	if(root){ 
+		if(difftime(mktime(&(date1)),mktime(&(root->date))) <= 0 && difftime(mktime(&(date2)), mktime(&(root->date))) >= 0){
+
+			if(!strcmp(root->record->patient->diseaseID,diseaseID))
+				count++;
+			if(root->duplicates->head){
+				temp = root->duplicates->head;
+				while(temp != NULL){
+					if(!strcmp(temp->record->patient->diseaseID,diseaseID))
+						count++;
+				}
+				temp = temp->next;
+			}
+		}
+		count += tree_attribute(root->left,diseaseID,country,date1,date2);
+		count += tree_attribute(root->right,diseaseID,country,date1,date2);
+	}
+	return count;
+}
+
+int tree_no_exit(treeNode* root){
+	int count = 0;
+	if(root){
+		if(!is_date(root->record->patient->exitDate)){
+			count++;
+			if(root->duplicates->head){
+				list_node* temp = root->duplicates->head;	
+				while(temp != NULL){
+					if(!is_date(temp->record->patient->exitDate))
+						count++;
+				}
+				temp = temp->next;
+			}
+		}
+		count += tree_no_exit(root->left);
+		count += tree_no_exit(root->right);
+	}
+
+	return count;
+	
+}
+
+int count_interval(treeNode* node,struct tm date1,struct tm date2){  //[date1,date2]
+
+	int count = 0;
+	if(node){ 
+		if(difftime(mktime(&(date1)),mktime(&(node->date))) <= 0 && difftime(mktime(&(date2)), mktime(&(node->date))) >= 0){
+			count++;
+			if(node->duplicates->head)
+				count += node->duplicates->counter;
+		}
+		count += count_interval(node->left,date1,date2);
+		count += count_interval(node->right,date1,date2);
+
+	}
+	return count;
+}
 
 
+
+int count_tree_nodes(treeNode* node){
+	int count = 0;
+	if(node){
+		count++;
+		if(node->duplicates->head)
+			count += node->duplicates->counter;
+
+		count += count_tree_nodes(node->left);
+		count += count_tree_nodes(node->right);
+	}
+	return count;
+}
 
 void print_tree(treeNode* node){
 	if(node == NULL)
 		return;
-	print_tree(node->left);
 	print_tree(node->right);
-
-	printf("entryDate %d-%d-%d: %s %s ",node->date.tm_mday,node->date.tm_mon,node->date.tm_year,node->record->patient->firstname
-		,node->record->patient->lastname);
-
-	if(node->duplicates->head != NULL){
-
-		list_node* temp = node->duplicates->head;
-		while(temp != NULL){
-			printf(",%s %s ",temp->record->patient->firstname,temp->record->patient->lastname);
-			temp = temp->next;
-		}
-	}
-	printf("\n");
-
+	print_tree(node->left);
+	printf("%s\n",node->record->patient->firstname);
 }
-
-void print_tree_interval(treeNode* node,struct tm date1,struct tm date2){  //[date1,date2]
-	if(node == NULL)
-		return;
-	if(difftime(mktime(&(date1)), mktime(&(node->date))) < 0){
-		print_tree_interval(node->left,date1,date2);
-	}
-	if(difftime(mktime(&(date1)), mktime(&(node->date))) <= 0 && difftime(mktime(&(date2)), mktime(&(node->date))) >= 0){ 
-
-		printf("entryDate %d-%d-%d: %s %s ",node->date.tm_mday,node->date.tm_mon,node->date.tm_year,node->record->patient->firstname
-		,node->record->patient->lastname);
-	}
-	if(difftime(mktime(&(date2)), mktime(&(node->date))) > 0){
-		print_tree_interval(node->right,date1,date2);
-	}
-
-
 	
-}

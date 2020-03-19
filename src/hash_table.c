@@ -52,7 +52,7 @@ int key_duplicate(HashEntry* Table,Bucket**  bucket_pos,char* key, int hash){
 		return 0; // theres no duplicate,cause bucket == NULL
 	}
 	else{
-		while(bucket->next != NULL){
+		while(bucket != NULL){
 			current_entries = bucket->counter;
 			for(int i = 0; i < current_entries; i++){
 				if(!strcmp(key,bucket->entries[i].key)){
@@ -62,14 +62,6 @@ int key_duplicate(HashEntry* Table,Bucket**  bucket_pos,char* key, int hash){
 			}
 
 			bucket = bucket->next;
-		}
-
-		current_entries = bucket->counter;
-		for(int i = 0; i < current_entries; i++){	
-			if(!strcmp(key,bucket->entries[i].key)){
-				*(bucket_pos) = bucket;
-				return i; 						// there is a duplciate so return true
-			}
 		}
 	}
 	return -1;  // means there is no duplicate
@@ -122,7 +114,6 @@ HashEntry* insert_bucket(HashEntry* table,int option,list_node* tail,int BucketS
 
 
 	return table;
-
 
 
 }
