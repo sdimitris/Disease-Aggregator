@@ -117,15 +117,6 @@ while(fgets(buffer,buffer_size,fp)){
     countryHashtable = insert_bucket(countryHashtable,2,patient_list->tail,BucketSize,hash_value);
 }
 
-//printf("\n");
-//printf("Printing country hash table...\n\n");
-//list_node* temp = patient_list->head;
-
-//printf("Printing patients...\n");
-//print_list(patient_list);
-
-//printf("Printing tree...\n");
-//printf("edw\n"); 
 char* command;
 struct tm date1,date2;
 
@@ -206,7 +197,6 @@ label:
                 }
                 strptime(exitDate,"%d-%m-%Y",&date2);
                 insert_exitDate(patient_list,id,date2);
-               // print_list(patient_list);
                 continue;
 
             }
@@ -215,7 +205,6 @@ label:
             	numCurrentPatients(diseaseHashtable,diseaseID);
             }
             else if(!strcmp(temp,"topk")){
-
                 country = strtok(NULL," ");
                 int k  = atoi(strtok(NULL," "));
                 printf("k = %d\n",k);
@@ -230,13 +219,13 @@ label:
                     printf("%s\n",temp1[i].name);                              
                 for(int i = 0; i < size; i++)
                     root = insert_heap(root,temp1[i].name,temp1[i].counter);
-
-                print_topk(root,&k);
         
                 
             }
 
     }
+
+
     printf("Deallocating memory..\n");
     free_list(patient_list);
     free(patient_list);

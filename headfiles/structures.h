@@ -52,13 +52,12 @@ typedef struct HashEntry{
 	Bucket* head;
 	int buckets;
 }HashEntry;
-
 typedef struct heap_node{
 	char* name;
 	int counter;
 	struct heap_node* left;
 	struct heap_node* right;
 	struct heap_node* parent;
-}heap_node;
 
+}heap_node;
 #endif

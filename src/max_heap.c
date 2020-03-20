@@ -129,10 +129,13 @@ void swap_string(char** str1,char** str2){
   	*str2 = temp; 
 
 }
+
+
 heap_node* insert_heap(heap_node* root,char* name, int counter){
 	int height1;
 	int height2;
 	if(root == NULL){
+
 		heap_node* node = malloc(sizeof(heap_node));
 		node->name = malloc(ENTRY_SIZE*sizeof(char));
 		strcpy(node->name,name);
@@ -140,42 +143,39 @@ heap_node* insert_heap(heap_node* root,char* name, int counter){
 		node->right = NULL;
 		node->left = NULL;
 		node->parent = NULL;
-
 		return node;
 	}	
-	else{
-		height1 = subtree_height(root->left);
-		height2 = subtree_height(root->right);
-		if(height1 <= height2){
 
-			root->left  = insert_heap(root->left,name,counter);	
+
+
+	height1 = subtree_height(root->left);
+	height2 = subtree_height(root->right);
+	if(height1 <= height2){
+		heap_node* lchild  = insert_heap(root->left,name,counter);
+		root->left = lchild;
+
+		lchild->parent = root;
+		if(lchild->parent != NULL){
+			if(lchild->counter > root->counter){
+				swap(&lchild->counter,&root->counter);
+				swap_string(&lchild->name,&root->name);
 			
-			if(root->left->counter >= root->counter){
-				swap(&root->left->counter,&root->counter);
-				swap_string(&root->left->name,&root->name);
-			}
-
-			if( height1 == height2 && root->left && root->right ){
-				if( root->left->counter < root->right->counter ){
-					swap(&root->left->counter,&root->right->counter);
-					swap_string(&root->left->name,&root->right->name);
-				}
-
-			}
-
-		}
-		else if(height1 > height2){
-			root->right = insert_heap(root->right,name,counter);
-			if(root->right->counter > root->counter ){
-
-				swap(&root->right->counter,&root->counter);
-				swap_string(&root->right->name,&root->name);	
-
 			}
 		}
 	}
-	
+	if(height1 > height2){
+		heap_node* rchild = insert_heap(root->right,name,counter);
+		root->right = rchild;
+		rchild->parent = root;
 
+		if(rchild->parent != NULL){
+			if(rchild->counter > root->counter ){
+				swap(&rchild->counter,&root->counter);
+				swap_string(&rchild->name,&root->name);
+				
+			}
+		}
+	}
 	
 
 	return root;
