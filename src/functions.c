@@ -48,25 +48,6 @@ int hash(char* string,int Buckets){
    return h%Buckets; // or return h % C;sh;
 }
 
-void print_hash_cell(HashEntry* table,int hash){
-	Bucket* bucket = table[hash].head;
-	int current_entries;
-	if(bucket == NULL){
-		printf("Bucket is empty\n");
-		return;
-	}
-	else{
-		current_entries = bucket->counter;
-		printf("Bucket keys %d :",hash);
-		while(bucket->next != NULL ){
-			for(int i = 0; i < current_entries; i++)
-				printf("Key %s ",bucket->entries[i].key);
-	
-		}
-	}
-}
-
-
 void print_patient(Patient* patient){
 	printf("%s %s %s %s exitDate: %d-%d-%d\n",patient->firstname,patient->lastname,patient->diseaseID,patient->country,
 		patient->exitDate.tm_mday,patient->exitDate.tm_mon,patient->exitDate.tm_year);

@@ -38,20 +38,6 @@ Patient* create_patient(int id,char* firstname,char* lastname,char* diseaseID,ch
 
 
 }
-void print_table(HashEntry* table){
-    int buckets = table->buckets;
-    for( int i = 0; i < buckets; i++){
-        Bucket* bucket = table[i].head;
-        while(bucket != NULL){
-            int current_entries = bucket->counter;
-            for(int j = 0; j < current_entries; j++)
-                printf("key %s ",bucket->entries[j].key);
-            bucket = bucket->next;
-        }
-    }
-
-}
-
 int main(int argc, char *argv[]){
 int opt,BucketSize,id;
 int diseaseHashtableNumofEntries,countryHashtableNumofEntries;
@@ -60,17 +46,17 @@ while((opt = getopt(argc, argv, "p:1:2:b:h")) != -1){
 	switch(opt){
         case 'p':  
         	fileName = optarg;
-            printf("patients file: %s \n",fileName);
+           //printf("patients file: %s \n",fileName);
             break;  
         case 'h':
         	break;
         case '1':
         	diseaseHashtableNumofEntries = atoi(optarg);
-        	printf("diseaseHashtableNumofEntries %d\n",diseaseHashtableNumofEntries);
+        	//printf("diseaseHashtableNumofEntries %d\n",diseaseHashtableNumofEntries);
         	break;
         case '2':
         	countryHashtableNumofEntries = atoi(optarg);
-       	 	printf("countryHashtableNumofEntries %d\n",countryHashtableNumofEntries);
+       	 	//printf("countryHashtableNumofEntries %d\n",countryHashtableNumofEntries);
         	break;
         case 'b':
         	BucketSize = atoi(optarg);
@@ -78,7 +64,7 @@ while((opt = getopt(argc, argv, "p:1:2:b:h")) != -1){
         		printf("Invalid bucket size, please type a number greater or equal than %ld\n",ENTRY_SIZE + sizeof(int) + sizeof(Bucket*));
         		return 0;
         	}
-        	printf("BucketSize %d\n",BucketSize);
+        	//printf("BucketSize %d\n",BucketSize);
         	break;
         case '?':
         	printf("Wrong option %c\n",optopt);
@@ -120,7 +106,7 @@ while(fgets(buffer,buffer_size,fp)){
 
     patient = create_patient(id,firstname,lastname,diseaseID,country,entryDate,exitDate);
 
- 
+    duplicate_id(patient_list,id);
 
     patient_list = insert_list(patient_list,patient); /// 1 2 3 4
 
@@ -130,9 +116,6 @@ while(fgets(buffer,buffer_size,fp)){
     hash_value = hash(patient->country,countryHashtableNumofEntries);
     countryHashtable = insert_bucket(countryHashtable,2,patient_list->tail,BucketSize,hash_value);
 }
-printf("Printing disease hash table\n");
-
-//print_table(countryHashtable);
 
 //printf("\n");
 //printf("Printing country hash table...\n\n");
@@ -142,8 +125,7 @@ printf("Printing disease hash table\n");
 //print_list(patient_list);
 
 //printf("Printing tree...\n");
-//printf("edw\n");
-
+//printf("edw\n"); 
 char* command;
 struct tm date1,date2;
 
@@ -151,10 +133,10 @@ memset(&date1, 0, sizeof(struct tm));
 memset(&date2, 0, sizeof(struct tm));
 char* temp,*uknown;
 size_t size = 100;
-//print_tree(countryHashtable[6].head->entries[1].root);
+
 label:
+    printf("Type the aprpropiate command\n");
     while(getline(&buffer,&size,stdin) != -1){  
-        printf("Type the aprpropiate command\n");
             
         
         command = strtok(buffer,"\n");
@@ -163,7 +145,7 @@ label:
  		printf("%s\n",temp);
             if(!strcmp(temp,"/exit")){
                 printf("Terminating disease monitor...\n");
-                exit(0);
+                break;
             }
             else if(!strcmp(temp,"/globalDiseaseStats")){
             	entryDate = strtok(NULL," ");
@@ -217,6 +199,7 @@ label:
 
                 id = atoi(strtok(NULL," ")); // initialize
                 exitDate = strtok(NULL," ");
+
                 if(exitDate == NULL){
                     printf("Please give valid aguments\n");
                     continue;
@@ -231,21 +214,35 @@ label:
             	diseaseID = strtok(NULL," "); // initialize
             	numCurrentPatients(diseaseHashtable,diseaseID);
             }
-            else if(!strcmp(temp,"topk-Countries")){
-                heap* heap;
-                int k = atoi(strtok(NULL," "));
+            else if(!strcmp(temp,"topk")){
+
                 country = strtok(NULL," ");
-                printf("%d\n",differentRecs(countryHashtable));
-                heap = make_heap(differentRecs(countryHashtable));
-                heap = fill_heap(countryHashtable,heap,country);
-                
+                int k  = atoi(strtok(NULL," "));
+                printf("k = %d\n",k);
+                heap_node* temp1;
+                printf("%d\n",differentRecs(diseaseHashtable));
+                int size = differentRecs(diseaseHashtable);
+                char** recs = array(diseaseHashtable);
+
+                temp1 = fill_heap(recs,countryHashtable,country,size);
+                heap_node* root = NULL;
+                for(int i = 0; i < size; i++)
+                    printf("%s\n",temp1[i].name);                              
+                for(int i = 0; i < size; i++)
+                    root = insert_heap(root,temp1[i].name,temp1[i].counter);
+
+                print_topk(root,&k);
+        
                 
             }
 
     }
-
-
-
+    printf("Deallocating memory..\n");
+    free_list(patient_list);
+    free(patient_list);
+    free(buffer);
+    free_hash_table(countryHashtable);
+    free_hash_table(diseaseHashtable);
 }
 
 	

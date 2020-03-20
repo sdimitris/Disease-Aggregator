@@ -82,7 +82,6 @@ HashEntry* insert_bucket(HashEntry* table,int option,list_node* tail,int BucketS
 			head = head->next;
 
 		current_entries = head->counter;
-		printf("current_entries %d\n",current_entries);
 		free_space = BucketSize - sizeof(int) - sizeof(Bucket*) - (current_entries*ENTRY_SIZE);
 		if(ENTRY_SIZE <= free_space){
 			printf("free_space %d bs %d\n",free_space,BucketSize);
@@ -110,3 +109,30 @@ HashEntry* insert_bucket(HashEntry* table,int option,list_node* tail,int BucketS
 }
 
 
+void free_hash_table(HashEntry* table){
+
+	Bucket* bucket = NULL;
+	int buckets = table->buckets;
+	int current_entries = 0;
+	Bucket* temp;
+	treeNode* root;
+	for(int i = 0; i < buckets; i++){
+		bucket = table[i].head;
+		if(bucket == NULL)
+			continue;
+		while(bucket != NULL){
+			current_entries = bucket->counter;
+			for(int j = 0; j < current_entries; j++){
+				root = bucket->entries[j].root;
+				free_tree(root);
+			}
+			free(bucket->entries);
+			temp = bucket;
+			bucket = bucket->next;
+			free(temp);
+		}
+		
+	}
+
+		
+}

@@ -13,6 +13,7 @@ list* insert_list(list* list,Patient* p){  // ths exw perasei hdh desmeumenh mnh
 	if(list->head == NULL){
 		list->head = new_node;
 		list->tail = new_node;
+
 		return list;
 	}
 	list->tail->next = new_node;
@@ -21,19 +22,36 @@ list* insert_list(list* list,Patient* p){  // ths exw perasei hdh desmeumenh mnh
 	
 }
 void print_list(list* list){
-list_node* temp = list->head;
-Patient* patient;
-if(temp == NULL){
-	printf("List is empty\n");
-	return;
+	list_node* temp = list->head;
+	Patient* patient;
+	if(temp == NULL){
+		printf("List is empty\n");
+		return;
+	}
+	while(temp != NULL){
+			patient = temp->patient;
+			temp = temp->next;
+
+	}
 }
-while(temp != NULL){
-		patient = temp->patient;
-		temp = temp->next;
 
+void free_list(list* list){
+
+	list_node* head = list->head;
+	list_node* temp  = head;
+	while(head != NULL){
+		free_patient(head->patient);
+		temp = head;
+		head = head->next;
+		free(temp);
+	}
 }
 
+void free_patient(Patient* patient){
 
-
+	free(patient->firstname);
+	free(patient->lastname);
+	free(patient->country);
+	free(patient->diseaseID);
 }
 

@@ -1,3 +1,4 @@
-539 Laura Hale FLU-2018 Argentina 27-06-2000 -
-664 Kayla Hamilton SARS-1 Greece 22-02-2002 -
-652 James Burke FLU-2018 Russia 22-06-2009 23-02-2010
+47 David Williams SARS-1 Denmark 30-05-2009 20-02-2020
+39 Mary Sanders FLU-2018 France 12-06-2011 04-01-2017
+38 Mary Sanders FLU-2018 France 12-06-2013 04-01-2017
+35 Mary Sanders FLU-2018 France 12-06-2013 04-01-2017

@@ -33,7 +33,6 @@ typedef struct treeNode{
 	int height;
 	list_node* record;
 
-	list* duplicates; // list of duplicates
 
 }treeNode;
 
@@ -54,9 +53,12 @@ typedef struct HashEntry{
 	int buckets;
 }HashEntry;
 
-
-typedef struct heap{
+typedef struct heap_node{
+	char* name;
 	int counter;
-	char* key;
-}heap;
+	struct heap_node* left;
+	struct heap_node* right;
+	struct heap_node* parent;
+}heap_node;
+
 #endif
