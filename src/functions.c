@@ -7,11 +7,13 @@
 #define B 76963 
 #define C 86969 
 #define FIRSTH 37
+
 struct tm string_to_date(char* string){
 
 struct tm time_struct;
 strptime(string,"%d-%m-%Y",&time_struct);
 return time_struct;
+
 
 }
 int is_date(struct tm date){

@@ -134,14 +134,26 @@ label:
         command = strtok(buffer,"\n");
  		
  		temp = strtok(command," ");
- 		printf("%s\n",temp);
+
             if(!strcmp(temp,"/exit")){
-                printf("Terminating disease monitor...\n");
+
+                printf("Deallocating memory..\n");
+                free_list(patient_list);
+                free(patient_list);
+                free(buffer);
+                free_hash_table(countryHashtable);
+                free_hash_table(diseaseHashtable);
                 break;
             }
+            
             else if(!strcmp(temp,"/globalDiseaseStats")){
             	entryDate = strtok(NULL," ");
             	exitDate = strtok(NULL," ");
+                if(entryDate && !exitDate){
+                    printf("Please give valid exit date\n");
+                    continue;
+                }
+                
             	globalDiseaseStats(diseaseHashtable,entryDate,exitDate);
                 continue;
 
@@ -210,10 +222,11 @@ label:
                 int k  = atoi(strtok(NULL," "));
                 country = strtok(NULL," ");
                 entryDate = strtok(NULL," ");
-                if(entryDate != NULL)
-                    exitDate = strtok(NULL," ");
-                else
-                    exitDate = NULL;
+                exitDate = strtok(NULL," ");
+                if(entryDate && !exitDate){
+                    printf("Please give valid exit date\n");
+                    continue;
+                }
 
                 int size = differentRecs(diseaseHashtable);
                 char** recs = array(diseaseHashtable);
@@ -255,11 +268,11 @@ label:
                 int k = atoi(strtok(NULL," "));
                 diseaseID = strtok(NULL," ");
                 entryDate = strtok(NULL," ");
-                if(entryDate != NULL){
-                    exitDate = strtok(NULL," ");
+                exitDate = strtok(NULL," ");
+                if(entryDate && !exitDate){
+                    printf("Please give valid exit date\n");
+                    continue;
                 }
-                else
-                    exitDate = NULL;
 
                 int size = differentRecs(countryHashtable);
                 int temp_size = size;
@@ -299,16 +312,9 @@ label:
 
     }
 
-
-
-    printf("Deallocating memory..\n");
-
-    free_list(patient_list);
-    free(patient_list);
-    free(buffer);
-    free_hash_table(countryHashtable);
-    free_hash_table(diseaseHashtable);
     fclose(fp);
+    printf("Terminating disease monitor...\n");
+    return 0;
 
 }
 

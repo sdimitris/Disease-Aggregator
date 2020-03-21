@@ -156,7 +156,6 @@ heap_node* insert_heap(heap_node* root,char* name, int counter){
 	int height1 = 0;
 	int height2 = 0;
 	if(root == NULL){
-
 		heap_node* node = malloc(sizeof(heap_node));
 		node->name = malloc(ENTRY_SIZE*sizeof(char));
 		strcpy(node->name,name);
