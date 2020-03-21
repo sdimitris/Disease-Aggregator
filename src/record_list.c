@@ -8,7 +8,6 @@ list* insert_list(list* list,Patient* p){  // ths exw perasei hdh desmeumenh mnh
 	list_node* new_node = malloc(sizeof(struct list_node));
 	new_node->patient = p;
 	new_node->next = NULL;
-	new_node->record = NULL; // record member is used for trees only
 
 	if(list->head == NULL){
 		list->head = new_node;
@@ -37,14 +36,17 @@ void print_list(list* list){
 
 void free_list(list* list){
 
-	list_node* head = list->head;
-	list_node* temp  = head;
-	while(head != NULL){
-		free_patient(head->patient);
-		temp = head;
-		head = head->next;
+	list_node* node = list->head;
+	list_node* temp;
+	while(node != NULL){
+		temp = node;
+		node = node->next;
+		free_patient(temp->patient);
+		free(temp->patient);
 		free(temp);
 	}
+	list->head = NULL;
+	list->tail = NULL;
 }
 
 void free_patient(Patient* patient){
@@ -53,5 +55,6 @@ void free_patient(Patient* patient){
 	free(patient->lastname);
 	free(patient->country);
 	free(patient->diseaseID);
+
 }
 

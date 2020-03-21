@@ -11,7 +11,6 @@ struct tm string_to_date(char* string){
 
 struct tm time_struct;
 strptime(string,"%d-%m-%Y",&time_struct);
-//printf("Month is %d\n",time_struct.tm_mon);
 return time_struct;
 
 }

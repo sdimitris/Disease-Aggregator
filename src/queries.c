@@ -69,7 +69,7 @@ int countryStats(HashEntry* table,char* diseaseID,char* country,struct tm date1,
 			for( int j = 0; j < current_entries; j++){
 				if(!strcmp(bucket->entries[j].key,country)){
 					treeNode* root = bucket->entries[j].root;
-					return tree_attribute(root,diseaseID,date1,date2);
+					return tree_attribute(root,diseaseID,date1,date2,2);
 				}
 			}
 			bucket = bucket->next;
@@ -127,6 +127,7 @@ void numCurrentPatients(HashEntry* table,char* diseaseID){
 	int current_entries = 0;
 	treeNode* root = NULL;
 	Bucket* bucket = NULL;
+	
 	if(diseaseID != NULL){
 		hash_value = hash(diseaseID,table->buckets);
 		bucket = table[hash_value].head;

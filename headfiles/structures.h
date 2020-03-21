@@ -16,7 +16,6 @@ typedef struct Patient{
 typedef struct list_node{
 	struct Patient* patient;
 	struct list_node* next;
-	struct list_node* record;  //used iin trees duplicate
 }list_node;
 
 typedef struct List{

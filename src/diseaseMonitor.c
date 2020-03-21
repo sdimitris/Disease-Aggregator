@@ -117,12 +117,13 @@ while(fgets(buffer,buffer_size,fp)){
     countryHashtable = insert_bucket(countryHashtable,2,patient_list->tail,BucketSize,hash_value);
 }
 
-char* command;
+char* command = NULL;
 struct tm date1,date2;
 
 memset(&date1, 0, sizeof(struct tm));
 memset(&date2, 0, sizeof(struct tm));
-char* temp,*uknown;
+char* temp = NULL;
+char* uknown = NULL;
 size_t size = 100;
 
 label:
@@ -204,26 +205,25 @@ label:
             	diseaseID = strtok(NULL," "); // initialize
             	numCurrentPatients(diseaseHashtable,diseaseID);
             }
-            else if(!strcmp(temp,"topk")){
+            else if(!strcmp(temp,"/topk-Diseases")){
 
-                country = strtok(NULL," ");
                 int k  = atoi(strtok(NULL," "));
+                country = strtok(NULL," ");
                 entryDate = strtok(NULL," ");
                 if(entryDate != NULL)
                     exitDate = strtok(NULL," ");
                 else
                     exitDate = NULL;
-                
+
                 int size = differentRecs(diseaseHashtable);
                 char** recs = array(diseaseHashtable);
                 int temp_size = size;
-                heap_node* temp1 = fill_heap(recs,countryHashtable,country,size,entryDate,exitDate);
+
+                heap_node* temp1 = fill_heap(recs,countryHashtable,country,size,entryDate,exitDate,1);
                 heap_node* root = NULL;
                                   
                 for(int i = 0; i < temp_size; i++)
                     root = insert_heap(root,temp1[i].name,temp1[i].counter);
-                   
-                
 
                 heap_node* last = NULL;
                 int last_level = -1;
@@ -231,21 +231,70 @@ label:
                 heap_node* max = malloc(sizeof(heap_node));
                 max->name = malloc(ENTRY_SIZE*sizeof(char));
 
-
                 for(int i = 0; i < k; i++){
+                     if(temp_size == 0)
+                        break;
                     last_level = -1;
-                    find_last(root,0,&last_level,&last);
+                    find_last(root,-1,&last_level,&last);
                     root = pop_root(root,&last,temp_size--,&max);
                     printf("%s %d\n",max->name,max->counter); 
 
                 }
 
+                for(int i = 0; i < size; i++)
+                    free(temp1[i].name);
+                
+                free(temp1);
                 free(max->name);
                 free(max);    
                 free_heap(root);
                 free_array(recs,size); 
-
                 continue;
+            }
+            else if(!strcmp(temp,"/topk-Countries")){
+                int k = atoi(strtok(NULL," "));
+                diseaseID = strtok(NULL," ");
+                entryDate = strtok(NULL," ");
+                if(entryDate != NULL){
+                    exitDate = strtok(NULL," ");
+                }
+                else
+                    exitDate = NULL;
+
+                int size = differentRecs(countryHashtable);
+                int temp_size = size;
+                char** recs = array(countryHashtable);
+                heap_node* temp1 = fill_heap(recs,diseaseHashtable,diseaseID,size,entryDate,exitDate,2);
+                heap_node* root = NULL;
+                 for(int i = 0; i < size ; i++)
+                    root = insert_heap(root,temp1[i].name,temp1[i].counter);
+
+                heap_node* last = NULL;
+                int last_level = -1;
+
+                heap_node* max = malloc(sizeof(heap_node));
+                max->name = malloc(ENTRY_SIZE*sizeof(char));
+
+                for(int i = 0; i < k; i++){
+                    if(temp_size == 0)
+                        break;
+                    last_level = -1;
+                    find_last(root,0,&last_level,&last);
+                    root = pop_root(root,&last,temp_size--,&max);
+                    printf("%s %d\n",max->name,max->counter); 
+
+
+                }
+                 for(int i = 0; i < size; i++)
+                    free(temp1[i].name);
+                
+                free(temp1);
+                free(max->name);
+                free(max);    
+                free_heap(root);
+                free_array(recs,size); 
+                continue;
+
             }
 
     }
@@ -253,13 +302,13 @@ label:
 
 
     printf("Deallocating memory..\n");
+
     free_list(patient_list);
     free(patient_list);
     free(buffer);
     free_hash_table(countryHashtable);
     free_hash_table(diseaseHashtable);
-    free(countryHashtable);
-    free(diseaseHashtable);
+    fclose(fp);
 
 }
 

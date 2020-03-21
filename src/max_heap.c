@@ -22,6 +22,7 @@ int differentRecs(HashEntry* table){
 	return counter;
 }
 int exists(char** table,char* key,int size){
+	
 	for(int i = 0; i < size; i++){
 		if(!strcmp(table[i],key))
 			return 1;
@@ -38,12 +39,12 @@ char** array(HashEntry* table){
 	int pos = 0;
 	int size = 0;
 	int counter = 0;
-	int i,j;
-	char** array = NULL;
+	int i = 0;
+	int j = 0;
 	heap_node* heap = NULL;
 
 	size = differentRecs(table);
-	array = malloc(sizeof(char*)*size);
+	char** array = malloc(sizeof(char*)*size);
 	for (i = 0; i < size; i++)
 		array[i] = malloc(ENTRY_SIZE*sizeof(char));
 
@@ -66,8 +67,13 @@ char** array(HashEntry* table){
 	return array;
 }
 
+int min(int a,int b){
 
-heap_node* fill_heap(char** differentRecs,HashEntry* table,char* name,int size,char* date11,char* date22){
+	return( a < b) ? a : b;
+
+
+}
+heap_node* fill_heap(char** differentRecs,HashEntry* table,char* name,int size,char* date11,char* date22,int option){
 
 	int hash_value = hash(name,table->buckets);
 	Bucket* bucket = table[hash_value].head;
@@ -102,9 +108,9 @@ heap_node* fill_heap(char** differentRecs,HashEntry* table,char* name,int size,c
 				for(j = 0; j < size; j++){
 					strcpy(couples[j].name,differentRecs[j]);
 					if(date11 && date22)
-						count = tree_attribute(root,differentRecs[j],date1,date2);
+						count = tree_attribute(root,differentRecs[j],date1,date2,option);
 					else
-						count = count_attribute(root,differentRecs[j]);
+						count = count_attribute(root,differentRecs[j],option);
 					
 
 					couples[j].counter = count;
@@ -126,7 +132,7 @@ int subtree_height(heap_node* root){
 		return 0;
 	int lheight = subtree_height(root->left);
 	int rheight = subtree_height(root->right);
-	return max(lheight,rheight) + 1;
+	return min(lheight,rheight) + 1;
 
 }
 void swap( int* root, int* parent){
@@ -147,8 +153,8 @@ void swap_string(char** str1,char** str2){
 
 
 heap_node* insert_heap(heap_node* root,char* name, int counter){
-	int height1;
-	int height2;
+	int height1 = 0;
+	int height2 = 0;
 	if(root == NULL){
 
 		heap_node* node = malloc(sizeof(heap_node));
@@ -161,9 +167,6 @@ heap_node* insert_heap(heap_node* root,char* name, int counter){
 		return node;
 
 	}	
-
-
-
 	height1 = subtree_height(root->left);
 	height2 = subtree_height(root->right);
 	if(height1 <= height2){
@@ -234,28 +237,37 @@ void find_last(heap_node* root,int level,int* last_level,heap_node** res){
 
 
 heap_node* pop_root(heap_node* root, heap_node** last,int size,heap_node** max){
-
-
+	if(root == NULL)
+		return NULL;
+	if(!root->right && !root->left){
+		(*max)->counter = root->counter;
+		strcpy((*max)->name,root->name);
+		return root;
+	}
 	swap(&root->counter,&(*last)->counter);
 	swap_string(&root->name,&(*last)->name);
 	
 	(*max)->counter = (*last)->counter;
 	strcpy((*max)->name,(*last)->name);
-	if((*last)->parent->right  == *last)
-		(*last)->parent->right = NULL;
-	else
-		(*last)->parent->left = NULL; 	
+
+	if((*last)->parent){
+		if((*last)->parent->right  == *last )
+			(*last)->parent->right = NULL;
+		else
+			(*last)->parent->left = NULL; 	
+	}
 	
 	free((*last)->name);
 	free(*last);
 	heap_node* temp = root;
 
-	for( int i = 0; i < size && temp; i++){
+	
+	for( int i = 0; i < size && temp ; i++){
 		if( temp->left && temp->right){  // an exei duo paidia vres to megalutero
 			if(temp->left->counter >= temp->right->counter){ 
 				if(temp->left->counter > temp->counter){
 					swap(&temp->counter,&temp->left->counter);
-					swap_string(&temp->name,&(temp->name));
+					swap_string(&temp->name,&(temp->left->name));
 					temp = temp->left;
 				}
 			}

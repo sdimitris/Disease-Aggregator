@@ -99,17 +99,21 @@ treeNode* insert_date(treeNode* node,Patient* patient,list_node* tail){
 
 
 }
-int tree_attribute(treeNode* root, char* diseaseID,struct tm date1,struct tm date2){
+int tree_attribute(treeNode* root, char* uknown,struct tm date1,struct tm date2,int option){
 	int count = 0;
 	list_node* temp;
 
 	if(root){ 
 		if(difftime(mktime(&(date1)),mktime(&(root->date))) <= 0 && difftime(mktime(&(date2)), mktime(&(root->date))) >= 0){
-			if(!strcmp(root->record->patient->diseaseID,diseaseID))
+			if( option == 1 && !strcmp(root->record->patient->diseaseID,uknown))
 				count++;
+			else if( option == 2 && !strcmp(root->record->patient->country,uknown)){
+				count++;
+			}
+			
 		}
-		count += tree_attribute(root->left,diseaseID,date1,date2);
-		count += tree_attribute(root->right,diseaseID,date1,date2);
+		count += tree_attribute(root->left,uknown,date1,date2,option);
+		count += tree_attribute(root->right,uknown,date1,date2,option);
 	}
 	return count;
 }
@@ -172,15 +176,17 @@ void free_tree(treeNode* root){
 	free(root);
 
 }
-int count_attribute(treeNode* root, char* uknown){  // option 1 for diseases 
+int count_attribute(treeNode* root, char* uknown,int option){  // option 1 for diseases 
 	int count = 0;
 	if(root){
 
-		if(!strcmp(uknown,root->record->patient->diseaseID))
+		if(option == 1 && !strcmp(uknown,root->record->patient->diseaseID))
+			count++;
+		else if( option == 2 && !strcmp(uknown,root->record->patient->country))
 			count++;
 		
-		count += count_attribute(root->left,uknown);
-		count += count_attribute(root->right,uknown);
+		count += count_attribute(root->left,uknown,option);
+		count += count_attribute(root->right,uknown,option);
 
 	}
 	return count;

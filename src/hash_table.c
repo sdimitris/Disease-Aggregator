@@ -64,7 +64,7 @@ HashEntry* insert_bucket(HashEntry* table,int option,list_node* tail,int BucketS
 	int current_entries=0;
 	Bucket* bucket_pos,*temp;
 	int duplicate_pos = 0;
-	char* key = malloc(ENTRY_SIZE*sizeof(char));
+	char* key;
 	if(option == 1)
 		key = tail->patient->diseaseID;
 	else
@@ -103,7 +103,7 @@ HashEntry* insert_bucket(HashEntry* table,int option,list_node* tail,int BucketS
 	else{
 		bucket_pos->entries[duplicate_pos].root = insert_date(bucket_pos->entries[duplicate_pos].root,tail->patient,tail);	
 	}
-
+	
 	return table;
 
 }
@@ -126,13 +126,17 @@ void free_hash_table(HashEntry* table){
 			for(int j = 0; j < current_entries; j++){
 				root = bucket->entries[j].root;
 				free_tree(root);
-				//free(bucket->entries[j].key);
+				free(bucket->entries[j].key);
 			}
-			free(bucket->entries);
 			temp = bucket;
 			bucket = bucket->next;
+			free(temp->entries);
 			free(temp);
+		
 		}
 	}
+
+	free(table);
+
 
 }
