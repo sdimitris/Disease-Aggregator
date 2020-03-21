@@ -3,7 +3,7 @@
 #define DXOPEN_SOURCE 700
 #include<time.h>
 #include"structures.h"
-
+#include <stdbool.h>
 void duplicate_id(list* list,int id);
 struct tm string_to_date(char* date);
 int hash(char* string,int Buckets);
@@ -38,7 +38,7 @@ int count_interval(treeNode* node,struct tm date1,struct tm date2);
 void print_patient(Patient* patient);
 int virusStats(HashEntry* table,char* diseaseID,struct tm date1,struct tm date2);
 int countryStats(HashEntry* table,char* diseaseID,char* country,struct tm date1,struct tm date2);
-int tree_attribute(treeNode* root, char* diseaseID,char* country,struct tm date1,struct tm date2);
+int tree_attribute(treeNode* root, char* diseaseID,struct tm date1,struct tm date2);
 int tree_no_exit(treeNode* root);
 void numCurrentPatients(HashEntry* table,char* diseaseID);
 int is_date(struct tm date);
@@ -53,7 +53,7 @@ int count_attribute(treeNode* root, char* uknown);
 
 int subtree_height(heap_node* root);
 char** array(HashEntry*);
-heap_node* fill_heap(char**,HashEntry*,char*,int k);
+heap_node* fill_heap(char**,HashEntry*,char*,int k,char*,char*);
 int exists(char** table,char* key,int size);
 heap_node* insert_heap(heap_node* root,char* name,int counter);
 
@@ -63,5 +63,9 @@ void swap_string(char** str1,char** str2);
 
 void print_level(heap_node* root,int* k,int level);
 void print_topk(heap_node* root,int* k);
+void find_last(heap_node* root,int level,int* last_level,heap_node** last);
+heap_node* pop_root(heap_node* root,heap_node** last,int size,heap_node** max);
+void free_heap(heap_node* root);
+void free_array(char** recs,int size); 
 
 #endif

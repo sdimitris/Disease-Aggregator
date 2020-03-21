@@ -5,6 +5,7 @@
 #include<stdlib.h>
 
 
+
 int differentRecs(HashEntry* table){
 	Bucket* bucket = NULL;
 	int counter = 0;
@@ -18,7 +19,6 @@ int differentRecs(HashEntry* table){
 			bucket = bucket->next;
 		}
 	}
-	printf("%d\n",counter);
 	return counter;
 }
 int exists(char** table,char* key,int size){
@@ -67,7 +67,7 @@ char** array(HashEntry* table){
 }
 
 
-heap_node* fill_heap(char** differentRecs,HashEntry* table,char* name,int size){
+heap_node* fill_heap(char** differentRecs,HashEntry* table,char* name,int size,char* date11,char* date22){
 
 	int hash_value = hash(name,table->buckets);
 	Bucket* bucket = table[hash_value].head;
@@ -76,6 +76,16 @@ heap_node* fill_heap(char** differentRecs,HashEntry* table,char* name,int size){
 	treeNode* root = NULL;
 	int flag = 0;
 	int i,j;
+	struct tm date1,date2;
+
+	memset(&date1, 0, sizeof(struct tm));
+	memset(&date2, 0, sizeof(struct tm));
+
+	if(date11 && date22){
+		strptime(date11,"%d-%m-%Y",&date1);
+    	strptime(date22,"%d-%m-%Y",&date2);
+	}
+
 
 	heap_node* couples = malloc(size*sizeof(struct heap_node));  // pinakas apo komvous heap
 	for(int i = 0; i < size; i ++)
@@ -91,7 +101,12 @@ heap_node* fill_heap(char** differentRecs,HashEntry* table,char* name,int size){
 				root = bucket->entries[i].root;
 				for(j = 0; j < size; j++){
 					strcpy(couples[j].name,differentRecs[j]);
-					count = count_attribute(root,differentRecs[j]);
+					if(date11 && date22)
+						count = tree_attribute(root,differentRecs[j],date1,date2);
+					else
+						count = count_attribute(root,differentRecs[j]);
+					
+
 					couples[j].counter = count;
 				}
 
@@ -144,6 +159,7 @@ heap_node* insert_heap(heap_node* root,char* name, int counter){
 		node->left = NULL;
 		node->parent = NULL;
 		return node;
+
 	}	
 
 
@@ -193,14 +209,99 @@ void print_level(heap_node* root,int* k,int level){
 if (root == NULL)  
         return;  
     if (level == 1){
-  
-        printf("ss%s %d\n",root->name,root->counter); 
+        printf("%s %d\n",root->name,root->counter); 
     }  
     else if (level > 1){  
        print_level(root->left,k,level-1);  
        print_level(root->right,k,level-1);  
     }  
 }
+
+void find_last(heap_node* root,int level,int* last_level,heap_node** res){
+
+	if(root ==  NULL)
+		return;
+	if(!root->left && !root->right && level > *last_level){
+		*res = root;
+		*last_level = level;
+		return;
+	}
+
+	find_last(root->right,level+1,last_level,res);
+	find_last(root->left,level+1,last_level,res);
+}
+
+
+
+heap_node* pop_root(heap_node* root, heap_node** last,int size,heap_node** max){
+
+
+	swap(&root->counter,&(*last)->counter);
+	swap_string(&root->name,&(*last)->name);
+	
+	(*max)->counter = (*last)->counter;
+	strcpy((*max)->name,(*last)->name);
+	if((*last)->parent->right  == *last)
+		(*last)->parent->right = NULL;
+	else
+		(*last)->parent->left = NULL; 	
+	
+	free((*last)->name);
+	free(*last);
+	heap_node* temp = root;
+
+	for( int i = 0; i < size && temp; i++){
+		if( temp->left && temp->right){  // an exei duo paidia vres to megalutero
+			if(temp->left->counter >= temp->right->counter){ 
+				if(temp->left->counter > temp->counter){
+					swap(&temp->counter,&temp->left->counter);
+					swap_string(&temp->name,&(temp->name));
+					temp = temp->left;
+				}
+			}
+			else if( temp->right->counter > temp->left->counter){
+				if( temp->right->counter > temp->counter){
+					swap(&temp->counter,&temp->right->counter);
+					swap_string(&temp->name,&(temp->right->name));
+					temp = temp->right;	
+				}
+			}
+		}
+		else if( !temp->left && temp->right){                // an exei 1 paidi deksi tote tsekare
+			if(temp->right->counter > temp->counter){
+				swap(&temp->counter,&temp->right->counter);
+				swap_string(&temp->name,&temp->right->name);
+				temp = temp->right;
+			}
+		}
+		else if(temp->left && !temp->right){
+			if(temp->left->counter > temp->counter){
+				swap(&temp->counter,&temp->left->counter);
+				swap_string(&temp->name,&(temp->left->name));
+				temp = temp->left;
+			}
+		}
+	}
+
+	return root;
+}
+
+void free_heap(heap_node* root){
+	if(root == NULL)
+		return;
+
+	free_heap(root->left);
+	free_heap(root->right);
+	free(root->name);
+	free(root);
+
+
+
+}
+
+
+
+
 
 
 

@@ -112,6 +112,7 @@ HashEntry* insert_bucket(HashEntry* table,int option,list_node* tail,int BucketS
 void free_hash_table(HashEntry* table){
 
 	Bucket* bucket = NULL;
+	Bucket* head = NULL;
 	int buckets = table->buckets;
 	int current_entries = 0;
 	Bucket* temp;
@@ -125,14 +126,13 @@ void free_hash_table(HashEntry* table){
 			for(int j = 0; j < current_entries; j++){
 				root = bucket->entries[j].root;
 				free_tree(root);
+				//free(bucket->entries[j].key);
 			}
 			free(bucket->entries);
 			temp = bucket;
 			bucket = bucket->next;
 			free(temp);
 		}
-		
 	}
 
-		
 }

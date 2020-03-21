@@ -1,4 +1,8 @@
-47 David Williams SARS-1 Denmark 30-05-2009 20-02-2020
+47 David Williams SARS-1 France 30-05-2009 20-02-2020
+45 David Williams SARS-1 France 30-05-2009 20-02-2020
+33 Mary Sanders FLU-2019 France 12-06-2013 04-01-2017
 39 Mary Sanders FLU-2018 France 12-06-2011 04-01-2017
 38 Mary Sanders FLU-2018 France 12-06-2013 04-01-2017
 35 Mary Sanders FLU-2018 France 12-06-2013 04-01-2017
+34 Mary Sanders COVID-2019 France 12-06-2013 04-01-2017
+36 Mary Sanders COVID-2019 France 12-06-2013 04-01-2017

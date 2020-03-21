@@ -99,7 +99,7 @@ treeNode* insert_date(treeNode* node,Patient* patient,list_node* tail){
 
 
 }
-int tree_attribute(treeNode* root, char* diseaseID,char* country,struct tm date1,struct tm date2){
+int tree_attribute(treeNode* root, char* diseaseID,struct tm date1,struct tm date2){
 	int count = 0;
 	list_node* temp;
 
@@ -108,8 +108,8 @@ int tree_attribute(treeNode* root, char* diseaseID,char* country,struct tm date1
 			if(!strcmp(root->record->patient->diseaseID,diseaseID))
 				count++;
 		}
-		count += tree_attribute(root->left,diseaseID,country,date1,date2);
-		count += tree_attribute(root->right,diseaseID,country,date1,date2);
+		count += tree_attribute(root->left,diseaseID,date1,date2);
+		count += tree_attribute(root->right,diseaseID,date1,date2);
 	}
 	return count;
 }

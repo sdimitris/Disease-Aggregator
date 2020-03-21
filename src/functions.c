@@ -55,6 +55,12 @@ void print_patient(Patient* patient){
 
 }
 
+void free_array(char** array,int size){
 
+	for (int i = 0; i < size; ++i)
+        free(array[i]);
+
+	free(array);
+}
 
 

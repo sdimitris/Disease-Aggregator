@@ -48,7 +48,7 @@ void free_list(list* list){
 }
 
 void free_patient(Patient* patient){
-
+	
 	free(patient->firstname);
 	free(patient->lastname);
 	free(patient->country);
